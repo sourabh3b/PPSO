@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-	"github.com/Arafatk/glot"
+	"github.com/PPSO/plot"
 )
 
 
@@ -184,50 +184,8 @@ func main() {
 	//fmt.Println("plotYPoints = ", plotYPoints)
 	//fmt.Println("plotXPoints = ", plotXPoints)
 	//plot graph
-	plotGraph(plotXPoints,plotYPoints)
+	plot.PlotGraph(plotXPoints,plotYPoints)
 
 	log.Info("Graph Plot Done")
 }
 
-//plotGraph - plots the 2D Graph for the points
-func plotGraph(xPoints []float64, yPoints []float64) {
-	dimensions := 2
-	// The dimensions supported by the plot
-	persist := false
-	debug := false
-	plot, _ := glot.NewPlot(dimensions, persist, debug)
-	pointGroupName := "Fitness Function Vs Number of Iterations"
-	style := "lines"
-	points := [][]float64{xPoints, yPoints}
-	// Adding a point group
-	plot.AddPointGroup(pointGroupName, style, points)
-	// A plot type used to make points/ curves and customize and save them as an image.
-	plot.SetTitle("PPSO")
-	// Optional: Setting the title of the plot
-	plot.SetXLabel("X-Axis")
-	plot.SetYLabel("Y-Axis")
-	// Optional: Setting label for X and Y axis
-
-
-	_,maxX := MinMax(xPoints)
-	_,maxY := MinMax(yPoints)
-
-	plot.SetXrange(0, int(maxX))
-	plot.SetYrange(0, int(maxY) * 2)
-	// Optional: Setting axis ranges
-	plot.SavePlot("ppso.png")
-}
-
-func MinMax(array []float64) (float64, float64) {
-	var max float64 = array[0]
-	var min float64 = array[0]
-	for _, value := range array {
-		if max < value {
-			max = value
-		}
-		if min > value {
-			min = value
-		}
-	}
-	return min, max
-}
