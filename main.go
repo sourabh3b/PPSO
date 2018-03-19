@@ -7,10 +7,24 @@ import (
 	"math/rand"
 	"time"
 	"github.com/Arafatk/glot"
-	"github.com/PPSO/constants"
 	"github.com/satori/go.uuid"
 )
 
+
+//graph file name constants
+var GraphFolderName  = "graphs"
+var PPSO  = "PPSO"
+var DotPNG = ".png"
+var Slash = "/"
+
+//Graph naming
+var PSOPlotTitle = "PSO Fitness Function Vs Number of Iterations"
+var PPSOPlotTitle = "PPSO Fitness Function Vs Number of Iterations"
+var FitnessValue = "fitness value"
+
+
+var XAxisLabel = "Number of Iterations"
+var YAxisLabel = "Fitness Value"
 
 const (
 	MaxIteration   = 100
@@ -200,16 +214,16 @@ func PlotGraph(xPoints []float64, yPoints []float64) {
 	persist := false
 	debug := false
 	plot, _ := glot.NewPlot(dimensions, persist, debug)
-	pointGroupName := constants.FitnessValue
+	pointGroupName := FitnessValue
 	style := "lines"
 	points := [][]float64{xPoints, yPoints}
 	// Adding a point group
 	plot.AddPointGroup(pointGroupName, style, points)
 	// A plot type used to make points/ curves and customize and save them as an image.
-	plot.SetTitle(constants.PSOPlotTitle)
+	plot.SetTitle(PSOPlotTitle)
 	// Optional: Setting the title of the plot
-	plot.SetXLabel(constants.XAxisLabel)
-	plot.SetYLabel(constants.YAxisLabel)
+	plot.SetXLabel(XAxisLabel)
+	plot.SetYLabel(YAxisLabel)
 	// Optional: Setting label for X and Y axis
 
 
@@ -220,7 +234,7 @@ func PlotGraph(xPoints []float64, yPoints []float64) {
 	plot.SetYrange(0, int(maxY) * 2)
 
 	uuidN,_ := uuid.NewV1()
-	destinationFile := constants.GraphFolderName + constants.Slash + constants.PPSO + uuidN.String() + constants.DotPNG
+	destinationFile := GraphFolderName + Slash + PPSO + uuidN.String() + DotPNG
 	plot.SavePlot(destinationFile)
 }
 
