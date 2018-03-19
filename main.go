@@ -1,7 +1,7 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	//log "github.com/sirupsen/logrus"
 	"net/http"
 	"fmt"
 	"math/rand"
@@ -10,6 +10,7 @@ import (
 	//"github.com/Arafatk/glot"
 	"../satori/go.uuid"
 	//"github.com/satori/go.uuid"
+	//"log"
 )
 
 
@@ -110,7 +111,7 @@ func TestRoute(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-	log.Info("Starting PPSO ....")
+	fmt.Println("Starting PPSO ....")
 	//http.HandleFunc("/test", TestRoute)
 	//http.ListenAndServe(":8889", nil)
 	//todo : create API to calculate PSO fitness function value
@@ -204,7 +205,7 @@ func main() {
 	//plot graph
 	PlotGraph(plotXPoints,plotYPoints)
 
-	log.Info("Graph Plot Done")
+	fmt.Println("Graph Plot Done")
 }
 
 
