@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-	"github.com/Arafatk/glot"
-	"github.com/satori/go.uuid"
+	"../Arafatk/glot"
+	//"github.com/Arafatk/glot"
+	"../satori/go.uuid"
+	//"github.com/satori/go.uuid"
 )
 
 
