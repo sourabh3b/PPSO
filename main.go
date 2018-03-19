@@ -203,7 +203,9 @@ func main() {
 	//fmt.Println("plotYPoints = ", plotYPoints)
 	//fmt.Println("plotXPoints = ", plotXPoints)
 	//plot graph
-	PlotGraph(plotXPoints,plotYPoints)
+	fmt.Println("plotXPoints = ", plotXPoints)
+	fmt.Println("plotyPoints = ", plotYPoints)
+	//PlotGraph(plotXPoints,plotYPoints)
 
 	fmt.Println("Graph Plot Done")
 }
