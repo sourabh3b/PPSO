@@ -112,6 +112,10 @@ func TestRoute(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Println("Starting PPSO ....")
+
+	//variable for start time
+	startTime := time.Now()
+
 	//http.HandleFunc("/test", TestRoute)
 	//http.ListenAndServe(":8889", nil)
 	//todo : create API to calculate PSO fitness function value
@@ -208,6 +212,7 @@ func main() {
 	//PlotGraph(plotXPoints,plotYPoints)
 
 	fmt.Println("Graph Plot Done")
+	fmt.Println("time elapsed : ", time.Since(startTime))
 }
 
 
