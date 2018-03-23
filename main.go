@@ -11,6 +11,7 @@ import (
 	"../satori/go.uuid"
 	//"github.com/satori/go.uuid"
 	//"log"
+	"math"
 )
 
 
@@ -82,6 +83,29 @@ func evaluate(pos []float64) float64 {
 	return result
 }
 
+/*evaluateDDOSFitnessFunction - fitness function for DDoS attack mitigation
+Ref : R. J. Lavery, “Throughput optimization for wireless data transmission,” in M. S. Thesis, Polytechnic University,2001
+*/
+func evaluateDDOSFitnessFunction(pos []float64) float64 {
+	result := 0.0
+	/*
+		Td = (L-C)/L
+	*/
+	for _, x := range  pos {
+		var Td float64;
+		L := 108
+		C := 1
+		Rf := 1
+		A := 1
+		Pt := 1
+		No := 100
+		R := 871
+		alpha := 3.5
+		Td =  float64( (L-C)* Rf  * A * Pt) / float64(float64(L * No * R ) * math.Pow(x,alpha))
+		result += Td;
+	}
+	return result
+}
 
 func advance(p Particle) ([]float64, []float64) {
 	dim := len(p.Pos)
@@ -131,7 +155,8 @@ func main() {
 	for i := range swarm {
 		p := Particle{}
 		p.Initialize(Dimension, PopulationSize)
-		p.Fitness = evaluate(p.Pos)
+		//p.Fitness = evaluate(p.Pos)
+		p.Fitness = evaluateDDOSFitnessFunction(p.Pos)
 		swarm[i] = p
 	}
 
@@ -161,6 +186,11 @@ func main() {
 
 	var plotXPoints []float64
 	var plotYPoints []float64
+
+	/*todo: make changes for PPSO
+		objective : use go routine here to calculate fitness function convergence and store it in separate memory
+
+	 */
 	//while a termination criterion is not met:
 	for n := 0; n < MaxIteration; n++ {
 		// Update the particle's velocity:
@@ -170,9 +200,16 @@ func main() {
 
 		// Update Personal Best
 		for i, p := range swarm {
-			fitness := evaluate(p.Pos)
+			//fitness := evaluate(p.Pos)
+			fitness := evaluateDDOSFitnessFunction(p.Pos)
+
+
 			swarm[i].Fitness = fitness
-			pbestFitness := evaluate(p.Pbest)
+
+			pbestFitness := evaluateDDOSFitnessFunction(p.Pbest)
+			//pbestFitness := evaluate(p.Pbest)
+
+
 			if fitness < pbestFitness {
 				for j := range swarm[i].Pos {
 					swarm[i].Pbest[j] = swarm[i].Pos[j]
