@@ -31,7 +31,7 @@ var YAxisLabel = "Fitness Value"
 const (
 	MaxIteration   = 100
 	Dimension      = 2
-	PopulationSize = 50
+	PopulationSize = 200
 	StartRange     = -5.0
 	EndRange       = 5.0
 	W              = 0.5
@@ -181,19 +181,35 @@ func main() {
 	*/
 	//while a termination criterion is not met:
 	for n := 0; n < MaxIteration; n++ {
+
 		// Update the particle's velocity:
 		for i, p := range swarm {
 			swarm[i].Pos, swarm[i].Vel = advance(p)
 		}
 
+		/////// Fitness function calculation todo: parallelize this for loop
 		// Update Personal Best
+
+		pbestFitness := 0.0
+
 		for i, p := range swarm {
 			//fitness := evaluate(p.Pos)
 			fitness := evaluateDDOSFitnessFunction(p.Pos)
 
 			swarm[i].Fitness = fitness
 
-			pbestFitness := evaluateDDOSFitnessFunction(p.Pbest)
+
+			//go routine executing in separate thread for parallel fitness function calculation
+			//go func() {
+			//	pbestFitness = evaluateDDOSFitnessFunction(p.Pbest)
+			//	for j := range swarm[i].Pos {
+			//		swarm[i].Pbest[j] = swarm[i].Pos[j]
+			//	}
+			//}()
+			//time.Sleep(10)
+
+
+			//pbestFitness := evaluateDDOSFitnessFunction(p.Pbest) //<---
 			//pbestFitness := evaluate(p.Pbest)
 
 			if fitness < pbestFitness {
@@ -202,6 +218,8 @@ func main() {
 				}
 			}
 		}
+
+		///////////
 
 		// Update Local Best
 		bestParticle = &swarm[0]
