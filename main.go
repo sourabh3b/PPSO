@@ -2,11 +2,11 @@ package main
 
 import (
 	//log "github.com/sirupsen/logrus"
-	"net/http"
+	"../Arafatk/glot"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"time"
-	"../Arafatk/glot"
 	//"github.com/Arafatk/glot"
 	"../satori/go.uuid"
 	//"github.com/satori/go.uuid"
@@ -14,10 +14,9 @@ import (
 	"math"
 )
 
-
 //graph file name constants
-var GraphFolderName  = "graphs"
-var PPSO  = "PPSO"
+var GraphFolderName = "graphs"
+var PPSO = "PPSO"
 var DotPNG = ".png"
 var Slash = "/"
 
@@ -25,7 +24,6 @@ var Slash = "/"
 var PSOPlotTitle = "PSO Fitness Function Vs Number of Iterations"
 var PPSOPlotTitle = "PPSO Fitness Function Vs Number of Iterations"
 var FitnessValue = "fitness value"
-
 
 var XAxisLabel = "Number of Iterations"
 var YAxisLabel = "Fitness Value"
@@ -37,9 +35,15 @@ const (
 	StartRange     = -5.0
 	EndRange       = 5.0
 	W              = 0.5
+	L              = 108
+	C              = 1
+	Rf             = 1
+	A              = 1
+	Pt             = 1
+	No             = 100
+	R              = 871
+	alpha          = 3.5
 )
-
-
 
 type Particle struct {
 	Pos       []float64
@@ -50,15 +54,12 @@ type Particle struct {
 	Neighbors []*Particle
 }
 
-
-
 func randomPos() float64 {
 	var randValue float64
 	rand.Seed(time.Now().UnixNano())
 	randValue = StartRange + (EndRange-StartRange)*rand.Float64()
 	return randValue
 }
-
 
 func (p *Particle) Initialize(dim, population int) {
 	p.Pos = make([]float64, dim)
@@ -72,7 +73,6 @@ func (p *Particle) Initialize(dim, population int) {
 	}
 	copy(p.Pbest, p.Pos)
 }
-
 
 //This is a basic x^2
 func evaluate(pos []float64) float64 {
@@ -91,18 +91,11 @@ func evaluateDDOSFitnessFunction(pos []float64) float64 {
 	/*
 		Td = (L-C)/L
 	*/
-	for _, x := range  pos {
-		var Td float64;
-		L := 108
-		C := 1
-		Rf := 1
-		A := 1
-		Pt := 1
-		No := 100
-		R := 871
-		alpha := 3.5
-		Td =  float64( (L-C)* Rf  * A * Pt) / float64(float64(L * No * R ) * math.Pow(x,alpha))
-		result += Td;
+	for _, x := range pos {
+		var Td float64
+
+		Td = float64((L-C)*Rf*A*Pt) / float64(float64(L*No*R)*math.Pow(x, alpha))
+		result += Td
 	}
 	return result
 }
@@ -124,7 +117,6 @@ func advance(p Particle) ([]float64, []float64) {
 	return newPos, newVel
 }
 
-
 //TestRoute - test route
 func TestRoute(w http.ResponseWriter, r *http.Request) {
 	//render := render.New()
@@ -132,7 +124,6 @@ func TestRoute(w http.ResponseWriter, r *http.Request) {
 	//render.JSON(w, http.StatusOK, nil)
 	return
 }
-
 
 func main() {
 	fmt.Println("Starting PPSO ....")
@@ -143,7 +134,6 @@ func main() {
 	//http.HandleFunc("/test", TestRoute)
 	//http.ListenAndServe(":8889", nil)
 	//todo : create API to calculate PSO fitness function value
-
 
 	var swarm []Particle
 	var bestParticle *Particle
@@ -159,7 +149,6 @@ func main() {
 		p.Fitness = evaluateDDOSFitnessFunction(p.Pos)
 		swarm[i] = p
 	}
-
 
 	// Adding  Neighbors
 	for i := range swarm {
@@ -183,14 +172,13 @@ func main() {
 		}
 	}
 
-
 	var plotXPoints []float64
 	var plotYPoints []float64
 
 	/*todo: make changes for PPSO
-		objective : use go routine here to calculate fitness function convergence and store it in separate memory
+	objective : use go routine here to calculate fitness function convergence and store it in separate memory
 
-	 */
+	*/
 	//while a termination criterion is not met:
 	for n := 0; n < MaxIteration; n++ {
 		// Update the particle's velocity:
@@ -203,12 +191,10 @@ func main() {
 			//fitness := evaluate(p.Pos)
 			fitness := evaluateDDOSFitnessFunction(p.Pos)
 
-
 			swarm[i].Fitness = fitness
 
 			pbestFitness := evaluateDDOSFitnessFunction(p.Pbest)
 			//pbestFitness := evaluate(p.Pbest)
-
 
 			if fitness < pbestFitness {
 				for j := range swarm[i].Pos {
@@ -236,8 +222,8 @@ func main() {
 		//fmt.Println(bestParticle.Fitness)
 
 		//taking X points with Y points
-		plotXPoints = append(plotXPoints,float64(n))
-		plotYPoints = append(plotYPoints,bestParticle.Fitness)
+		plotXPoints = append(plotXPoints, float64(n))
+		plotYPoints = append(plotYPoints, bestParticle.Fitness)
 
 	}
 
@@ -251,8 +237,6 @@ func main() {
 	fmt.Println("Graph Plot Done")
 	fmt.Println("time elapsed : ", time.Since(startTime))
 }
-
-
 
 //plotGraph - plots the 2D Graph for the points
 func PlotGraph(xPoints []float64, yPoints []float64) {
@@ -273,18 +257,16 @@ func PlotGraph(xPoints []float64, yPoints []float64) {
 	plot.SetYLabel(YAxisLabel)
 	// Optional: Setting label for X and Y axis
 
-
-	_,maxX := MinMax(xPoints)
-	_,maxY := MinMax(yPoints)
+	_, maxX := MinMax(xPoints)
+	_, maxY := MinMax(yPoints)
 
 	plot.SetXrange(0, int(maxX))
-	plot.SetYrange(0, int(maxY) * 2)
+	plot.SetYrange(0, int(maxY)*2)
 
-	uuidN,_ := uuid.NewV1()
+	uuidN, _ := uuid.NewV1()
 	destinationFile := GraphFolderName + Slash + PPSO + uuidN.String() + DotPNG
 	plot.SavePlot(destinationFile)
 }
-
 
 func MinMax(array []float64) (float64, float64) {
 	var max float64 = array[0]
@@ -299,5 +281,3 @@ func MinMax(array []float64) (float64, float64) {
 	}
 	return min, max
 }
-
-

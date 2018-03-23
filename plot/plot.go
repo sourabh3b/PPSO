@@ -2,8 +2,8 @@ package plot
 
 import (
 	"github.com/Arafatk/glot"
-	"github.com/PPSO/util"
 	"github.com/PPSO/constants"
+	"github.com/PPSO/util"
 	"github.com/satori/go.uuid"
 )
 
@@ -26,15 +26,13 @@ func PlotGraph(xPoints []float64, yPoints []float64) {
 	plot.SetYLabel(constants.YAxisLabel)
 	// Optional: Setting label for X and Y axis
 
-
-	_,maxX := util.MinMax(xPoints)
-	_,maxY := util.MinMax(yPoints)
+	_, maxX := util.MinMax(xPoints)
+	_, maxY := util.MinMax(yPoints)
 
 	plot.SetXrange(0, int(maxX))
-	plot.SetYrange(0, int(maxY) * 2)
+	plot.SetYrange(0, int(maxY)*2)
 
-	uuidN,_ := uuid.NewV1()
+	uuidN, _ := uuid.NewV1()
 	destinationFile := constants.GraphFolderName + constants.Slash + constants.PPSO + uuidN.String() + constants.DotPNG
 	plot.SavePlot(destinationFile)
 }
-
